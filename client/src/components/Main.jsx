@@ -20,7 +20,7 @@ const Main = ({ activeState, setLoader }) => {
       <div className="w-16 h-full" />
       <div className="flex flex-col w-full h-full">
         <div className="w-full h-16" />
-        <div className="w-full h-full pt-16">
+        <div className="w-full h-full pt-5">
           <div className="w-full h-full overflow-y-auto">
             {getComponent(activeState)}
           </div>
