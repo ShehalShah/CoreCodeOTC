@@ -21,8 +21,4 @@ export class ParticipantsController {
     return await this.participantsService.create(body);
   }
 
-  @Patch(':id')
-  async update(@Query('id') id: string, @Body() body: UpdatePartipateDto) {
-    return await this.participantsService.update(id, body);
-  }
 }

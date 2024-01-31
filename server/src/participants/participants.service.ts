@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePartipateDto, UpdatePartipateDto } from './dto/participants.dto';
 
@@ -19,14 +19,6 @@ export class ParticipantsService {
   async create(data: CreatePartipateDto) {
     return await this.prisma.participants.create({
       data,
-    });
-  }
-
-  async update(id: string, body: UpdatePartipateDto) {
-    const { state, country } = body;
-    return await this.prisma.participants.update({
-      where: { id: Number(id) },
-      data: { state, country },
     });
   }
 }
