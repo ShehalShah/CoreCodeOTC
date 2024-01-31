@@ -1,8 +1,9 @@
 // Sidebar.js
-
+import { useNavigate } from "react-router-dom";
 import React, { useState } from 'react';
 
 const Sidebar = () => {
+    const nav=useNavigate()
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -26,16 +27,16 @@ const Sidebar = () => {
 
       {/* Sidebar content */}
       <ul className='space-y-2'>
-        <li className='rounded-md cursor-pointer px-2 py-1 hover:bg-gray-700 transition'>
+        <li className='rounded-md cursor-pointer px-2 py-1 hover:bg-gray-700 transition' onClick={()=>{nav("/")}}>
           Home
         </li>
-        <li className='rounded-md cursor-pointer px-2 py-1 hover:bg-gray-700 transition'>
+        <li className='rounded-md cursor-pointer px-2 py-1 hover:bg-gray-700 transition' onClick={()=>{nav("/dashboard")}}>
           Dashboard
         </li>
         <li className='rounded-md cursor-pointer px-2 py-1 hover:bg-gray-700 transition'>
           Meetups
         </li>
-        <li className='rounded-md cursor-pointer px-2 py-1 hover:bg-gray-700 transition'>
+        <li className='rounded-md cursor-pointer px-2 py-1 hover:bg-gray-700 transition' onClick={() => {nav("/summary")}}>
           Summaries
         </li>
       </ul>
