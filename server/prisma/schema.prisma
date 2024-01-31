@@ -10,45 +10,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Participants {
+model Analysis {
   id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  state     String?
-  country   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  summary  String
+  keywords String[]
 }
 
-model Meeting {
-  id               Int      @id @default(autoincrement())
-  title            String
-  duration         Int
-  link             String
-  photo           String
-  analtics         Analytics?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-}
-
-model MeetingParticipant {
-  id               Int      @id @default(autoincrement())
-  meetingId        Int
-  userId           Int
-  durationStayed   Int
-  engagementScore Int
-  isHost           Boolean
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-}
-
-model Analytics {
-  id               Int      @id @default(autoincrement())
-  meetingId        Int      @unique
-  meeting          Meeting  @relation(fields: [meetingId], references: [id])
-  report           String
-  keywords         String[]
-  topicsDiscussed  String[]
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+model Form{ 
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userEmail String
+  request  String
 }
