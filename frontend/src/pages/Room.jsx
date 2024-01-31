@@ -15,48 +15,37 @@ const RoomPage = () => {
   }, []);
 
   const handleCallUser = useCallback(async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: true,
-      });
-
-      const offer = await peer.getOffer();
-      socket.emit("user:call", { to: remoteSocketId, offer });
-      setMyStream(stream);
-      peer.addTrack(stream);
-    } catch (error) {
-      console.error("Error getting user media:", error);
-    }
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: true,
+    });
+    const offer = await peer.getOffer();
+    socket.emit("user:call", { to: remoteSocketId, offer });
+    setMyStream(stream);
   }, [remoteSocketId, socket]);
 
   const handleIncommingCall = useCallback(
     async ({ from, offer }) => {
-      try {
-        setRemoteSocketId(from);
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: true,
-        });
-
-        setMyStream(stream);
-        console.log(`Incoming Call`, from, offer);
-
-        const ans = await peer.getAnswer(offer);
-        socket.emit("call:accepted", { to: from, ans });
-        peer.addTrack(stream);
-      } catch (error) {
-        console.error("Error handling incoming call:", error);
-      }
+      setRemoteSocketId(from);
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+      });
+      setMyStream(stream);
+      console.log(`Incoming Call`, from, offer);
+      const ans = await peer.getAnswer(offer);
+      socket.emit("call:accepted", { to: from, ans });
     },
     [socket]
   );
 
   const sendStreams = useCallback(() => {
     for (const track of myStream.getTracks()) {
-      peer.addTrack(track);
+      peer.peer.addTrack(track, myStream);
     }
   }, [myStream]);
+
+  console.log(myStream?.getTracks());
 
   const handleCallAccepted = useCallback(
     ({ from, ans }) => {
@@ -149,6 +138,7 @@ const RoomPage = () => {
             height="100px"
             width="200px"
             url={remoteStream}
+            controls={true} config={{ file: { forceAudio: true ,forceVideo:true} }}
           />
         </>
       )}
