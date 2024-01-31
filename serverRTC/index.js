@@ -1,12 +1,8 @@
 const { Server } = require("socket.io");
 
-
 const io = new Server(8000, {
-    cors: {
-      origin: "http://192.168.36.27:5173", // Add your client's origin
-      methods: ["GET", "POST"],
-    },
-  });
+  cors: true,
+});
 
 const emailToSocketIdMap = new Map();
 const socketidToEmailMap = new Map();
