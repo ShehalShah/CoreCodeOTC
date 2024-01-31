@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ffmpeg from "fluent-ffmpeg";
 
 const Dashboard = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -8,13 +9,39 @@ const Dashboard = () => {
     setSelectedFile(file);
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (selectedFile) {
-      console.log("Uploading file:", selectedFile);
+      try {
+        const input = selectedFile;
+
+        // Construct the output file path
+        const outputFilePath = "output.mp3";
+
+        // Run FFmpeg to convert video to audio
+        ffmpeg()
+          .input(input.path)
+          .audioCodec("libmp3lame")
+          .audioBitrate(192)
+          .audioChannels(2)
+          .audioFrequency(44100)
+          .on("end", () => {
+            // Now, you can proceed with uploading or further processing of the audio file
+            console.log(
+              "Conversion finished. Uploading or processing the audio file."
+            );
+          })
+          .on("error", (err) => {
+            console.error("Error during video to audio conversion:", err);
+          })
+          .save(outputFilePath);
+      } catch (error) {
+        console.error("Error during video to audio conversion:", error);
+      }
     } else {
       console.warn("No file selected for upload.");
     }
   };
+
   return (
     <div className="flex h-screen">
       <div className="flex flex-col flex-1 w-full overflow-hidden">
