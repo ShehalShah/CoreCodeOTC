@@ -1,17 +1,18 @@
 class PeerService {
     constructor() {
-      if (!this.peer) {
-        this.peer = new RTCPeerConnection({
-          iceServers: [
-            {
-              urls: [
-                "stun:stun.l.google.com:19302",
-                "stun:global.stun.twilio.com:3478",
+        if (!this.peer) {
+            this.peer = new RTCPeerConnection({
+              iceServers: [
+                {
+                  urls: [
+                    "stun:stun.l.google.com:19302",
+                    "stun:global.stun.twilio.com:3478",
+                  ],
+                },
               ],
-            },
-          ],
-        });
-      }
+            });
+          }
+          this.remoteStreams = {};
     }
   
     async getAnswer(offer) {
@@ -36,6 +37,17 @@ class PeerService {
         return offer;
       }
     }
-  }
+
+    async getRemoteStream(peerId) {
+        if (this.remoteStreams[peerId]) {
+          return this.remoteStreams[peerId];
+        }
+        return null;
+      }
+    
+      addRemoteStream(peerId, stream) {
+        this.remoteStreams[peerId] = stream;
+      }
+    }
   
   export default new PeerService();

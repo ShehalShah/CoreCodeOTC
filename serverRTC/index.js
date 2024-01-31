@@ -9,6 +9,7 @@ const socketidToEmailMap = new Map();
 
 io.on("connection", (socket) => {
   console.log(`Socket Connected`, socket.id);
+
   socket.on("room:join", (data) => {
     const { email, room } = data;
     emailToSocketIdMap.set(email, socket.id);
@@ -31,8 +32,23 @@ io.on("connection", (socket) => {
     io.to(to).emit("peer:nego:needed", { from: socket.id, offer });
   });
 
-  socket.on("peer:nego:done", ({ to, ans }) => {
+  socket.on("peer:nego:done", async ({ to, ans }) => {
     console.log("peer:nego:done", ans);
     io.to(to).emit("peer:nego:final", { from: socket.id, ans });
+
+    // Notify the sender to add the remote stream
+    const remoteStream = await peer.getRemoteStream(to);
+    io.to(socket.id).emit("remote:stream", { from: to, stream: remoteStream });
+  });
+
+  socket.on("disconnect", () => {
+    const email = socketidToEmailMap.get(socket.id);
+    emailToSocketIdMap.delete(email);
+    socketidToEmailMap.delete(socket.id);
+
+    const room = Array.from(socket.rooms)[1];
+    io.to(room).emit("user:left", { email, id: socket.id });
   });
 });
+
+module.exports = io;
