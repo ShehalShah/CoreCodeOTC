@@ -25,6 +25,7 @@ model Meeting {
   title            String
   duration         Int
   link             String
+  photo           String
   analtics         Analytics?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
@@ -35,6 +36,7 @@ model MeetingParticipant {
   meetingId        Int
   userId           Int
   durationStayed   Int
+  engagementScore Int
   isHost           Boolean
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
