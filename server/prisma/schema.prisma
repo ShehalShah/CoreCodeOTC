@@ -1,0 +1,52 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Participants {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  state     String?
+  country   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Meeting {
+  id               Int      @id @default(autoincrement())
+  title            String
+  duration         Int
+  analtics         Analytics?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model MeetingParticipant {
+  id               Int      @id @default(autoincrement())
+  meetingId        Int
+  userId           Int
+  durationStayed   Int
+  collaborationScore Int
+  isHost           Boolean
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Analytics {
+  id               Int      @id @default(autoincrement())
+  meetingId        Int      @unique
+  meeting          Meeting  @relation(fields: [meetingId], references: [id])
+  report           String
+  keywords         String[]
+  topicsDiscussed  String[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
