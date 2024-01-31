@@ -24,6 +24,7 @@ model Meeting {
   id               Int      @id @default(autoincrement())
   title            String
   duration         Int
+  link             String
   analtics         Analytics?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
@@ -34,7 +35,6 @@ model MeetingParticipant {
   meetingId        Int
   userId           Int
   durationStayed   Int
-  collaborationScore Int
   isHost           Boolean
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
