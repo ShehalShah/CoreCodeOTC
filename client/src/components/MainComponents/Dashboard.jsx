@@ -1,8 +1,10 @@
-import React, { useState } from "react";
-import ffmpeg from "fluent-ffmpeg";
+import React, { useState, useRef } from "react";
+import { FFmpeg } from "@ffmpeg/ffmpeg";
+import axios from "axios";
 
 const Dashboard = () => {
   const [selectedFile, setSelectedFile] = useState(null);
+  const ffmpegRef = useRef(new FFmpeg());
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -10,36 +12,79 @@ const Dashboard = () => {
   };
 
   const handleUpload = async () => {
-    if (selectedFile) {
-      try {
-        const input = selectedFile;
+    try {
+      const ffmpeg = ffmpegRef.current;
+      // Load ffmpeg.wasm
+      // await ffmpeg.load();
 
-        // Construct the output file path
-        const outputFilePath = "output.mp3";
+      if (selectedFile) {
+        // Convert video to audio using ffmpeg.wasm
+        // const audioBlob = await convertVideoToAudio(selectedFile);
+        // console.log(audi oBlob);
 
-        // Run FFmpeg to convert video to audio
-        ffmpeg()
-          .input(input.path)
-          .audioCodec("libmp3lame")
-          .audioBitrate(192)
-          .audioChannels(2)
-          .audioFrequency(44100)
-          .on("end", () => {
-            // Now, you can proceed with uploading or further processing of the audio file
-            console.log(
-              "Conversion finished. Uploading or processing the audio file."
-            );
+        // Create a FormData object
+        const formData = new FormData();
+
+        // Append the audio file to the FormData object with key "audio"
+        formData.append("audio", selectedFile, "audio.mp3");
+
+        // Send a POST request to the API endpoint
+        const response = await fetch("http://localhost:5000/process_audio", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        axios
+          .post("https://odd-gray-coati-cuff.cyclic.app/analysis", {
+            summary: data.text,
+            keywords: data.keywords,
           })
-          .on("error", (err) => {
-            console.error("Error during video to audio conversion:", err);
+          .then(() => {
+            console.log("Success");
           })
-          .save(outputFilePath);
-      } catch (error) {
-        console.error("Error during video to audio conversion:", error);
+          .catch(() => {
+            console.log("Error");
+          });
+
+        console.log("Response from server:", data);
+      } else {
+        console.warn("No file selected for upload.");
       }
-    } else {
-      console.warn("No file selected for upload.");
+    } catch (error) {
+      console.error("Error during upload:", error);
     }
+  };
+
+  const convertVideoToAudio = async (videoFile) => {
+    const ffmpeg = ffmpegRef.current;
+    // await ffmpeg.load()
+
+    const reader = new FileReader();
+
+    reader.readAsArrayBuffer(videoFile);
+
+    return new Promise((resolve) => {
+      reader.onloadend = async () => {
+        // Run ffmpeg.wasm to convert video to audio
+        ffmpeg.writeFile("input.mp4", new Uint8Array(reader.result));
+        console.log("hijik");
+        ffmpeg.exec([
+          "-i",
+          "input.mp4",
+          "-vn",
+          "-acodec",
+          "libmp3lame",
+          "output.mp3",
+        ]);
+
+        // Read the converted audio file
+        const audioData = ffmpeg.readFile("output.mp3");
+        const audioBlob = new Blob([audioData.buffer], { type: "audio/mp3" });
+        resolve(audioBlob);
+      };
+    });
   };
 
   return (
@@ -58,8 +103,8 @@ const Dashboard = () => {
                 </label>
                 <input
                   type="file"
-                  id="videoFile"
-                  accept="video/*"
+                  id="audioFile"
+                  accept="audio/*"
                   onChange={handleFileChange}
                   className="mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
                 />

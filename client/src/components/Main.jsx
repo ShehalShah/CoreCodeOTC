@@ -1,17 +1,32 @@
 import React from "react";
 import { Home, Dashboard, Summary } from "./MainComponents";
+import Summaries from "./MainComponents/Summaries";
 
-const Main = ({ activeState, setLoader }) => {
+const Main = ({ activeState, setActiveState, data, setLoader }) => {
   const getComponent = (activeState) => {
     switch (activeState) {
       case "home":
-        return <Home setLoader={setLoader} />;
+        return (
+          <Home
+            setActiveState={setActiveState}
+            data={data}
+            setLoader={setLoader}
+          />
+        );
       case "dashboard":
         return <Dashboard setLoader={setLoader} />;
       case "summary":
-        return <Summary setLoader={setLoader} />;
+        return <Summary data={data} setLoader={setLoader} />;
+      case "summaries":
+        return <Summaries data={data} setLoader={setLoader} />;
       default:
-        return <Home setLoader={setLoader} />;
+        return (
+          <Home
+            setActiveState={setActiveState}
+            data={data}
+            setLoader={setLoader}
+          />
+        );
     }
   };
 

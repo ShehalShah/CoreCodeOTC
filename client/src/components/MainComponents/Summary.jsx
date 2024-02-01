@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
+import { IndexContext } from "../../context/IndexContext";
 
-const Summary = () => {
-  const summary =
-    "All of us, irrespective of our age, have friends. From among the number of friends we have, there might be one or two of them with whom we communicate each and every thing that happens in our lives. A day without a conversation with our friend might make us feel incomplete. A conversation between two friends can be based on the most trivial of things to the most serious ones.";
+const Summary = ({ data }) => {
+  const { index } = useContext(IndexContext);
+
+  const summary = data[index]?.summary;
 
   const getSentenceArray = (summary) => {
-    console.log(summary.split(". "));
-    return summary.split(". ");
+    console.log(summary, index, data);
+    return summary?.split(". ");
   };
 
   const sentenceArray = getSentenceArray(summary);

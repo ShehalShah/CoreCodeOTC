@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
+import { IndexContext } from "../../context/IndexContext";
 
-const Home = () => {
+const Home = ({ data, setActiveState }) => {
+  const { index, setIndex } = useContext(IndexContext);
   return (
     <div className="w-full h-full -mt-16 -ms-16">
       <div className="flex flex-1 w-full h-full">
@@ -21,7 +23,13 @@ const Home = () => {
               <button className="bg-blue-500 text-white py-3 px-6 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
                 Join the catchup meet
               </button>
-              <button className="bg-green-500 text-white py-3 px-6 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:border-green-300">
+              <button
+                className="bg-green-500 text-white py-3 px-6 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:border-green-300"
+                onClick={() => {
+                  setIndex(data?.length - 1);
+                  setActiveState("summary");
+                }}
+              >
                 Read latest summary
               </button>
               <button className="bg-yellow-500 text-white py-3 px-6 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring focus:border-yellow-300">
